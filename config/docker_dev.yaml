@@ -1,0 +1,39 @@
+server:
+  host: 0.0.0.0
+  port: 9980
+  workers: 16
+  root_url: 'msc199-sas52.domain.local:4200'
+  registration_route: '/registration-confirmation/'
+  pass_confirm_route: '/pass-recovery-confirmation/'
+  bid_item_route: '/supplier/bids/'
+  minio_external_url: 'msc199-sas52.domain.local:9015'
+
+database:
+  dsn: "postgresql://drs:b`KT.WwSz8}r&91@drs_db:5432/drs_main"
+  DB_HOST: 'drs_db'
+  DB_PORT: '5432'
+  DB_USER: 'drs'
+  DB_PASS: 'b`KT.WwSz8}r&91'
+  DB_NAME: 'drs_main'
+
+nsi_database:
+  dsn: 'mssql+pyodbc://mdm_drs_ro:N}ygWQXy@edw-mdm.pgk.rzd:1433/MDS?driver=ODBC Driver 17 for SQL Server'
+  DB_HOST: 'edw-mdm.pgk.rzd'
+  DB_PORT: '1433'
+  DB_USER: 'mdm_drs_ro'
+  DB_PASS: 'N}ygWQXy'
+  DB_NAME: 'MDS'
+
+
+celery:
+  dsn: 'amqp://guest:guest@drs_mq:5672//'
+
+minio:
+  dsn: 'fileserver:9000'
+  access_key: 'c16d8688-c96d-4379-9c26-208eec50d520'
+  secret_key: '008c4bc9-4d33-447c-9f9b-a1f830ff8749'
+  region: 'drs'
+  bucket_name: 'drs-files'
+
+flower:
+  dsn: 'flower:5555'

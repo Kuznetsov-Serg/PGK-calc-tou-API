@@ -1,0 +1,98 @@
+PROJECT_NAME: calc-tou-api
+PROJECT_VERSION: 0.1.0
+PROJECT_ENVIRONMENT: local
+BACKEND_CORS_ORIGINS: ["http://pg.dp.pgk.ru", "https://pg.dp.pgk.ru", "http://pg.dp.pgk.ru:5000", "https://pg.dp.pgk.ru:5000", "http://localhost:8000", "http://localhost:4208", "http://127.0.0.1:4208", "https://127.0.0.1:4208", "https://localhost:8000", "http://localhost", "https://localhost"]
+API_PREFIX: '/api'
+
+AUTHORISE_BY_TOKEN: True
+AUTHORISE_BY_WHITE_LIST: False
+
+# server:
+#  host: 127.0.0.1
+#  port: 9980
+#  workers: 1
+#  root_url: '127.0.0.1:9980'
+#  minio_external_url: '127.0.0.7:9000'
+#  registration_route: '/api/users/confirm/'
+#  pass_confirm_route: '/api/account/restore/confirm/'
+#  bid_item_route: '/supplier/bids/'
+
+#smtp_client:
+#  MAIL_USERNAME: PGK\noreply_drs
+#  MAIL_PASSWORD: fR02GA8w@
+#  MAIL_FROM: noreply_drs@pgkweb.ru
+#  MAIL_PORT: 25
+#  MAIL_SERVER: mail.pgk.rzd
+#  MAIL_TLS: False
+#  MAIL_SSL: False
+#  USE_CREDENTIALS: True
+
+database:
+#  dsn: 'postgresql://postgres:postgres@127.0.0.1:5432/tou_db'
+  dsn: 'postgresql://tou_test_user:KVcsXhhpii4r9SE3SCY3@pg.dp.pgk.ru:5000/tou_db'
+  DB_HOST: 'pg.dp.pgk.ru'
+  DB_PORT: '5000'
+  DB_USER: 'tou_test_user'
+  DB_PASS: 'KVcsXhhpii4r9SE3SCY3'
+  DB_NAME: 'tou_db'
+
+database_ora:
+  dsn: 'oracle+cx_oracle://poc:Poc21@msc01-sdb09:7436/orcl'
+  DB_HOST: 'msc01-sdb09'
+  DB_PORT: '7436'
+  DB_USER: 'poc'
+  DB_PASS: 'Poc21'
+  DB_NAME: 'orcl'
+
+jwt:
+  jwt_secret: 'WeEnUXk5_21NnMzqooQZsAwr13P7y7fvV'
+  jwt_algorithm: 'HS512'
+  jwt_access_token_days: '2'
+
+ldap_server: '10.144.52.13'
+
+# celery:
+#  dsn: 'amqp://guest:guest@127.0.0.1:9013//'
+#  tasks: 'tou_tasks'
+
+
+# minio:
+#  dsn: 'localhost:9015'
+#  access_key: 'c16d8688-c96d-4379-9c26-208eec50d520'
+#  secret_key: '008c4bc9-4d33-447c-9f9b-a1f830ff8749'
+#  region: 'tou'
+#  bucket_name: 'tou-files'
+
+
+# flower:
+#  dsn: '127.0.0.1:5555'
+
+logging:
+  version: 1
+  disable_existing_loggers: true
+  formatters:
+    json:
+      "()": pythonjsonlogger.jsonlogger.JsonFormatter
+      format: "%(message)s%(name)"
+      timestamp: true
+  handlers:
+    default:
+      formatter: json
+      class: logging.StreamHandler
+      stream: ext://sys.stderr
+    access:
+      formatter: json
+      class: logging.StreamHandler
+      stream: ext://sys.stdout
+  loggers:
+    '':
+      handlers:
+      - default
+      level: INFO
+    uvicorn.error:
+      level: INFO
+    uvicorn.access:
+      handlers:
+      - access
+      level: INFO
+      propagate: false
