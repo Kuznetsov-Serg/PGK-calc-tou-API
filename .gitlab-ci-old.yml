@@ -1,0 +1,124 @@
+stages:
+  - build
+  - test
+  - deploy
+
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS'
+      when: never
+    - if: '$CI_COMMIT_BRANCH'
+
+include:
+  - local: '/deploy/.build-base.yml'
+  - local: '/deploy/.test-base.yml'
+  - local: '/deploy/.deploy-base.yml'
+  # TODO: автоматический pre-commit фикс, требуется Docker образ - local: '/deploy/.pre-commit-base.yml'
+
+build:production:
+  extends: .build_base
+  variables:
+    JOB_PROJECT_ENVIRONMENT: "prod"
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  environment:
+    name: production
+
+lint:production:
+  extends: .lint_base
+  variables:
+    JOB_PROJECT_ENVIRONMENT: "prod"
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  environment:
+    name: production
+
+test:production:
+  extends: .test_base
+  variables:
+    JOB_PROJECT_ENVIRONMENT: "prod"
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  environment:
+    name: production
+
+deploy:production:
+  extends: .deploy_base
+  variables:
+    JOB_DEPLOY_USER: $DEPLOY_USER
+    JOB_DEPLOY_KEY: $DEPLOY_KEY
+    JOB_DEPLOY_SERVER: $DEPLOY_SERVER
+    JOB_PROJECT_ENVIRONMENT: "prod"
+    JOB_SWARM_SERVICE_NAME: "dummy-service"
+  script:
+    - echo "override deploy testing production script"
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  environment:
+    name: production
+
+
+build:testing:
+  extends: .build_base
+  variables:
+    JOB_PROJECT_ENVIRONMENT: "test"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
+  environment:
+    name: testing
+
+lint:testing:
+  extends: .lint_base
+  variables:
+    JOB_PROJECT_ENVIRONMENT: "test"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
+  environment:
+    name: testing
+
+test:testing:
+  extends: .test_base
+  variables:
+    JOB_PROJECT_ENVIRONMENT: "test"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
+  environment:
+    name: testing
+
+deploy:testing:
+  extends: .deploy_base
+  variables:
+    JOB_DEPLOY_USER: $DEPLOY_TEST_USER
+    JOB_DEPLOY_KEY: $DEPLOY_TEST_KEY
+    JOB_DEPLOY_SERVER: $DEPLOY_TEST_SERVER
+    JOB_PROJECT_ENVIRONMENT: "test"
+    JOB_SWARM_SERVICE_NAME: "lkk-telegram"
+  script:
+    - echo "override deploy testing environment script"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
+  environment:
+    name: testing
+
+lint:development:
+  extends: .lint_base
+  variables:
+    JOB_PROJECT_ENVIRONMENT: "dev"
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: manual
+      allow_failure: false
+  environment:
+    name: development
+
+test:development:
+  extends: .test_base
+  variables:
+    JOB_PROJECT_ENVIRONMENT: "dev"
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: manual
+      allow_failure: false
+  environment:
+    name: development

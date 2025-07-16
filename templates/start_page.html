@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block page_content %}
+<!-- Modal -->
+<div class="modal fade" id="modalForm" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Введите данные</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form class="row g-3 needs-validation" id="addForm" action="/add/email/" method="post">
+
+                   <div class="input-group mb-3">
+                       <input type="text"
+                                class="validate mb-3 form-control"
+                                id="employee"
+                                name="employee"
+                                placeholder="Наименование адресата (ФИО)"
+                                required />
+                    </div>
+                   <div class="input-group mb-3">
+                       <input type="email"
+                             pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                             class="validate mb-3 form-control"
+                             id="email"
+                             name="email"
+                             placeholder="e-mail"
+                             required />
+                    </div>
+                    <div class="modal-footer d-block">
+                       <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" id="addButton" class="btn btn-warning float-end">Submit</button>
+                    </div>
+                </form>
+            </div>
+            <script>
+                (function () {
+                  'use strict'
+                  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                  var forms = document.querySelectorAll('.needs-validation')
+                  // Loop over them and prevent submission
+                  Array.prototype.slice.call(forms)
+                    .forEach(function (form) {
+                      form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                          event.preventDefault()
+                          event.stopPropagation()
+                        }
+
+                        form.classList.add('was-validated')
+                      }, false)
+                    })
+                })()
+            </script>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid" style="margin:3em;">
+   <div>
+      <h4>Список адресатов для рассылки обогащенных данных</h4>
+   </div>
+   <br>
+   <div class="d-flex justify-content-start">
+      <div style="width: 500px">
+         <table id="dtLinks" class="table table-bordered table-sm">
+            <thead>
+               <tr>
+                  <th scope="col">Наименование адресата</th>
+                  <th scope="col">Email</th>
+               </tr>
+            </thead>
+            {% if mail_list %}
+            <tbody>
+               {% for mail in mail_list %}
+               <tr>
+                  <td>
+                     {{mail.employee}}
+                  </td>
+                  <td>
+                     {{mail.email}}
+                  </td>
+               </tr>
+               {% endfor %}
+            </tbody>
+            {% endif %}
+         </table>
+         <br>
+         <br>
+      </div>
+   </div>
+    <div class="btn-group" role="group" aria-label="Basic example">
+        <button type="submit" id="delButton" class="btn btn-primary">Удалить выбранные адреса</button>
+    </div>
+    <div class="btn-group" role="group" aria-label="Basic example">
+            <button type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalForm">
+               Добавить адресат
+        </button>
+    </div>
+    <br>
+    <br>
+    <br>
+
+    <div class="btn-group" role="group" aria-label="Basic example" id="manualSending">
+    <select class="form-select" id="selectedDate">
+        {% for date_mail in date_mail_list %}
+            <option value="{{ date_mail }}">
+                {{ date_mail }}
+            </option>
+        {% endfor %}
+    </select>
+        <button type="submit" id="sendEmail" class="btn btn-primary">Вручную отправить обогащенный набор данных письма за выбранное число</button>
+    </div>
+</div>
+{% endblock %}

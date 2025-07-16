@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block page_content %}
+    <div id="mainContentPage">
+        <form class="form-signin" id="authForm" action="javascript:void(0);">
+          <h1 class="h3 mb-3 font-weight-normal">Сервис НЛМК</h1>
+          <label for="username" class="sr-only">PGK Login</label>
+          <input type="username" id="username" name="username" class="form-control" placeholder="PGK Login" required autofocus>
+          <label for="password" class="sr-only">Password</label>
+          <input type="password" id="password" class="form-control" placeholder="Password" required>
+          <button id="authButton" class="btn btn-lg btn-primary btn-block" type="submit">Войти</button>
+          <p id="year_label" class="mt-5 mb-3 text-muted">&copy; 2022</p>
+        </form>
+    </div>
+{% endblock %}
